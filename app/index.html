@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello World!</title>
+  </head>
+  <body>
+    <h1>Hello World!</h1>
+    <div id="io"></div>
+    <div id="el"></div>
+  </body>
+  <script>
+      window.$ = window.jQuery = require(__dirname +'/bower_components/jquery/dist/jquery.min.js');
+      $(function() {
+        console.log("begin...")
+        var ipc = require('ipc');
+
+        var updateOnlineStatus = function() {
+          ipc.send('online-status-changed', navigator.onLine ? "online" : "offline")
+        }
+
+        window.addEventListener('offline',  updateOnlineStatus);
+        window.addEventListener('online',  updateOnlineStatus);
+
+        updateOnlineStatus()
+
+        $("#io").html("We are using io.js " + process.version)
+        $("#el").html("and Electron " + process.versions['electron'])
+        ipc.on('hello',function(event) {
+          console.log('render::hello')
+        })
+        ipc.on('hola',function(arg) {
+          console.log(arg)
+          alert("got an hola")
+        })
+      })
+  </script>
+</html>
